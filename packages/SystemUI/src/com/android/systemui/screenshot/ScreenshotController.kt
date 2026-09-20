@@ -509,7 +509,10 @@ internal constructor(
             }
             AudioManager.RINGER_MODE_VIBRATE -> {
                 vibrator?.takeIf { it.hasVibrator() }?.vibrate(
-                    VibrationEffect.createPredefined(VibrationEffect.EFFECT_TICK)
+                    VibrationEffect.createOneShot(
+                        50,
+                        VibrationEffect.DEFAULT_AMPLITUDE
+                    )
                 )
             }
             AudioManager.RINGER_MODE_NORMAL -> {
