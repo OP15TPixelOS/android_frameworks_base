@@ -107,6 +107,7 @@ public class DozeScreenBrightness extends BroadcastReceiver implements DozeMachi
     private final int[] mSensorToWallpaperScrimOpacity;
     private final int[] mSensorToScrimOpacity;
     private final float mScreenBrightnessDim;
+    private final boolean mUseDefaultBrightnessOnEntry;
 
     @DevicePostureController.DevicePostureInt
     private int mDevicePosture;
@@ -158,6 +159,8 @@ public class DozeScreenBrightness extends BroadcastReceiver implements DozeMachi
         mSystemSettings = systemSettings;
         mWallpaperInteractor = wallpaperInteractor;
         mScope = scope;
+        mUseDefaultBrightnessOnEntry = context.getResources().getBoolean(
+                com.android.systemui.res.R.bool.config_doze_use_default_brightness_on_entry);
 
         mScreenBrightnessMinimumDimAmount = context.getResources().getFloat(
                 R.dimen.config_screenBrightnessMinimumDimAmountFloat);
@@ -323,8 +326,11 @@ public class DozeScreenBrightness extends BroadcastReceiver implements DozeMachi
     }
 
     private void resetBrightnessToDefault() {
-        mDozeService.setDozeScreenBrightness(clampToDimBrightnessForScreenOff(
-                clampToUserSettingOrAutoBrightness(mDefaultDozeBrightness)));
+        final float brightness = mUseDefaultBrightnessOnEntry
+                ? mDefaultDozeBrightness
+                : clampToDimBrightnessForScreenOff(
+                        clampToUserSettingOrAutoBrightness(mDefaultDozeBrightness));
+        mDozeService.setDozeScreenBrightness(brightness);
         mDozeHost.setAodDimmingScrim(0f);
         mDozeHost.setAodWallpaperDimmingScrim(0f);
     }

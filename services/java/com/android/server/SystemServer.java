@@ -328,6 +328,7 @@ import com.android.server.webkit.WebViewUpdateService;
 import com.android.server.wm.ActivityTaskManagerService;
 import com.android.server.wm.WindowManagerGlobalLock;
 import com.android.server.wm.WindowManagerService;
+import com.oplus.server.OplusAccessControlManagerService;
 import com.android.server.lineage.health.HealthInterfaceService;
 
 import dalvik.system.VMDebug;
@@ -1677,6 +1678,13 @@ public final class SystemServer implements Dumpable {
                 mSystemServiceManager.startService(NPU_MANAGER_SERVICE_CLASS);
                 t.traceEnd();
             }
+
+            t.traceBegin("StartOplusAccessControlManagerService");
+            OplusAccessControlManagerService oplusAccessControl =
+                    new OplusAccessControlManagerService(context);
+            ServiceManager.addService("oplus_accesscontrol", oplusAccessControl);
+            oplusAccessControl.onSystemReady();
+            t.traceEnd();
 
             // Records errors and logs, for example wtf()
             // Currently this service indirectly depends on SettingsProvider so do this after
